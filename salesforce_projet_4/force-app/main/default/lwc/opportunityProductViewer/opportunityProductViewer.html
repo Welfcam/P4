@@ -1,0 +1,46 @@
+<!-- template de la lightning card Opportunity Product Viewer -->
+<template>
+    <lightning-card title={labels.Opportunity_Products} icon-name="standard:opportunity">
+        <div class="slds-p-around_small">
+            <template lwc:if={alertMessage}>
+                <div class="slds-m-bottom_large slds-box slds-theme_alert-texture slds-theme_warning">
+                    <h2>{alertMessage}</h2>
+                </div>
+            </template>
+            <!-- S'il y a des opportunités Produits à afficher : vue Administrateur ou vue non Administrateur -->
+            <template lwc:if={opportunityProducts}>
+                <template lwc:if={isAdmin}>
+                    <lightning-spinner if:true={isLoading}></lightning-spinner>
+                    <lightning-datatable data={opportunityProducts}
+                                            columns={columnsAdmin}
+                                            key-field="Id"
+                                            class="slds-theme_default"
+                                            onrowaction={handleRowAction}>
+                    </lightning-datatable>
+                </template>
+                <template lwc:else>
+                    <lightning-spinner if:true={isLoading}></lightning-spinner>
+                    <lightning-datatable data={opportunityProducts}
+                                            columns={columnsStandard}
+                                            key-field="Id"
+                                            class="slds-theme_default"
+                                            onrowaction={handleRowAction}>
+                    </lightning-datatable>
+                </template>
+            <!-- S'il n'y a aucune Opportunité Produit, affichage d'un message informatif-->    
+            </template>
+            <template lwc:elseif={emptyTable}>
+                <div>
+                    <h2>{emptyTable}</h2>
+                </div>
+            </template>
+            <!--S'il y a une erreur au chargement des Opportunités Produit, affichage d'un message d'erreur -->
+            <template lwc:else>
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="contentinfo">
+                    <span class="slds-assistive-text">Error</span>
+                    <h2>{error}</h2>
+                </div>
+            </template>
+            </div>
+    </lightning-card>
+</template>
