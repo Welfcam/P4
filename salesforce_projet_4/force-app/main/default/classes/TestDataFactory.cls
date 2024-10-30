@@ -1,10 +1,15 @@
 @isTest
 public class TestDataFactory {
     
-    public static Opportunity createDataTest() {
+    //Création d'un Pricebook de test
+    public static Pricebook2 createTestPriceBook() {
         Pricebook2 testPriceBook = new Pricebook2(Name='Pricebook Test', IsActive=true);
-        
         insert testPriceBook;
+        return testPriceBook;
+    }
+
+    //Création de 5 produits de test
+    public static List<Product2> createTestProductList() {
 
         List<Product2> testProductsList = new List<Product2>();
         testProductsList.add(new Product2(Name='Produit 1', QuantityInStock__c=50));
@@ -12,8 +17,13 @@ public class TestDataFactory {
         testProductsList.add(new Product2(Name='Produit 3', QuantityInStock__c=100));
         testProductsList.add(new Product2(Name='Produit 4', QuantityInStock__c=150));
         testProductsList.add(new Product2(Name='Produit 5', QuantityInStock__c=200));
-        
+
         insert testProductsList;
+        return testProductsList;
+    }
+
+    //Création de Pricebook entries (standard et priceBook test)
+    public static List<PricebookEntry> createPriceBookEntryList(List<Product2> testProductsList, Pricebook2 testPriceBook) {
 
         Id pricebookId = Test.getStandardPricebookId();
         List<PricebookEntry> pbeList = new List<PricebookEntry>();
@@ -30,7 +40,11 @@ public class TestDataFactory {
         pbeList.add(new PricebookEntry(Pricebook2Id=testPriceBook.Id, Product2Id=testProductsList[4].Id, UnitPrice=26990, IsActive=true));
 
         insert pbeList;
+        return pbeList;
+    }
 
+    //Création d'une Opportunité test
+    public static Opportunity createOpportunitytest(Pricebook2 testPriceBook) {
         Opportunity testOpp = new Opportunity (
             Name='Test Opp',
             StageName='Prospecting',
@@ -39,13 +53,22 @@ public class TestDataFactory {
             );
 
         insert testOpp;
+        return testOpp;
+    }
 
+    //Création d'Opportunités produits test (max 5)
+    public static List<OpportunityLineItem> createOppLineItemTest(List<Product2> testProductsList, Opportunity testOpp, List<PricebookEntry> pbeList, Integer nbOfOppProdMax5) {
         List<OpportunityLineItem> testOppProd = new List<OpportunityLineItem>();
-        testOppProd.add(new OpportunityLineItem(Product2Id = testProductsList[0].Id, OpportunityId = testOpp.Id, Quantity = 4, UnitPrice = pbeList[0].UnitPrice));
-        testOppProd.add(new OpportunityLineItem(Product2Id = testProductsList[1].Id, OpportunityId = testOpp.Id, Quantity = 7, UnitPrice = pbeList[1].UnitPrice));
-        testOppProd.add(new OpportunityLineItem(Product2Id = testProductsList[2].Id, OpportunityId = testOpp.Id, Quantity = 2, UnitPrice = pbeList[2].UnitPrice));
+        for(Integer i=0; i<nbOfOppProdMax5; i++) {
+            testOppProd.add(new OpportunityLineItem(
+                Product2Id = testProductsList[i].Id,
+                OpportunityId = testOpp.Id,
+                Quantity = i+2,
+                UnitPrice = pbeList[i].UnitPrice
+            ));
+        }
 
         insert testOppProd;
-        return testOpp;
+        return testOppProd;
     }
 }    
