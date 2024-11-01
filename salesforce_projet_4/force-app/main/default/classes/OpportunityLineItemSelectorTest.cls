@@ -14,9 +14,11 @@ private class OpportunityLineItemSelectorTest {
         List<OpportunityLineItem> results = OpportunityLineItemSelector.getOppLineItemByOpportunityId(testOpp.Id);
         Test.stopTest();
         Assert.areEqual(3, results.size(), 'Should return 3 Opportunity Product');
+        Assert.areEqual('Produit 1', results[0].Product2.Name, 'Should return "Produit 1"');
+        Assert.areEqual(4, results[2].Quantity, 'Should return 4');
     }
 
-    //Test avec 1 opportunités produit
+    //Test avec 1 opportunité produit
     @isTest
     static void test1OppProd() {
         Pricebook2 testPriceBook = TestDataFactory.createTestPriceBook();
@@ -30,7 +32,7 @@ private class OpportunityLineItemSelectorTest {
         Assert.areEqual(1, results.size(), 'Should return 1 Opportunity Product');
     }
 
-    //Test avec aucune opportunités produit
+    //Test avec aucune opportunité produit
     @isTest
     static void testNoOppProd() {
         Pricebook2 testPriceBook = TestDataFactory.createTestPriceBook();

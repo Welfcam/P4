@@ -14,6 +14,8 @@ private class OpportunityLineItemControllerTest {
         List<OpportunityLineItem> results = OpportunityLineItemController.getOpportunityLineItem(testOpp.Id);
         Test.stopTest();
         Assert.areEqual(3, results.size(), 'Should return 3 Opportunity Product');
+        Assert.areEqual('Produit 1', results[0].Product2.Name, 'Should return "Produit 1"');
+        Assert.areEqual(4, results[2].Quantity, 'Should return 4');
     }
 
     //Test avec 1 opportunité produit

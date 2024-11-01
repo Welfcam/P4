@@ -1,8 +1,8 @@
-@isTest(SeeAllData=true)
-private class CurrentUserProfileNameSelectorTest {
+@isTest
+private class CurrentUserProfileNameControllerTest {
 
     @isTest
-    public static void testGetCurrentUserProfileNameSales() {
+    public static void TestUserProfileNameSales() {
        
         Profile commercialProfile = [SELECT Id FROM Profile WHERE Name = 'Custom: Sales Profile' LIMIT 1];
        
@@ -26,14 +26,14 @@ private class CurrentUserProfileNameSelectorTest {
        
         Test.startTest();
             System.runAs(testUser) {
-                String result = CurrentUserProfileNameSelector.getCurrentUserProfileName();
+                String result = CurrentUserProfileNameController.userProfileName();
                 System.assertEquals('Custom: Sales Profile', result, 'Should return Custom: Sales Profile.');
             }
         Test.stopTest();
     }
 
     @isTest
-    public static void testGetCurrentUserProfileNameAdmin() {
+    public static void TestUserProfileNameAdmin() {
 
         Profile adminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
 
@@ -55,10 +55,9 @@ private class CurrentUserProfileNameSelectorTest {
 
         Test.startTest();
             System.runAs(testUser2) {
-                String result = CurrentUserProfileNameSelector.getCurrentUserProfileName();
+                String result = CurrentUserProfileNameController.userProfileName();
                 System.assertEquals('System Administrator', result, 'Should return System Administrator');
             }
         Test.stopTest();
-
     }
 }
