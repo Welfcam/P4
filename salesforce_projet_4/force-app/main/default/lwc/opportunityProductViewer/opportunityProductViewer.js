@@ -1,6 +1,6 @@
 import { LightningElement, api, wire, track} from 'lwc';
 import getOpportunityLineItem from '@salesforce/apex/OpportunityLineItemController.getOpportunityLineItem';
-import userProfileName from '@salesforce/apex/UserProfileNameController.userProfileName';
+import userProfileName from '@salesforce/apex/CurrentUserProfileNameController.userProfileName';
 import labels from './labels';
 import { NavigationMixin } from 'lightning/navigation';
 import { deleteRecord } from 'lightning/uiRecordApi';
@@ -10,7 +10,7 @@ import { RefreshEvent } from 'lightning/refresh';
 export default class OpportunityProductViewer extends NavigationMixin(LightningElement) {
     @api recordId;
     opportunityProducts;
-    @track labels = labels;
+    labels = labels;
     wiredOppLineItemResult;
     error;
     alertMessage;
@@ -21,7 +21,7 @@ export default class OpportunityProductViewer extends NavigationMixin(LightningE
     //Liste des colonnes pour le profil System Administrator
     columnsAdmin = [
         { label : labels.Product_Name, fieldName: 'Name', type: 'text',},
-        { label : labels.Quantity, fieldName: 'Quantity', editable: true, type: 'number', cellAttributes: { alignment: 'left', class: { fieldName: 'format'} }},
+        { label : labels.Quantity, fieldName: 'Quantity', type: 'number', cellAttributes: { alignment: 'left', class: { fieldName: 'format'} }},
         { label : labels.Unit_Price, fieldName: 'UnitPrice', type: 'currency', cellAttributes: { alignment: 'left' }},
         { label : labels.Total_Price, fieldName: 'TotalPrice', type: 'currency', cellAttributes: { alignment: 'left' }},
         { label : labels.Quantity_in_stock, fieldName: 'Stock', type: 'number', cellAttributes: { alignment: 'left' }},
@@ -71,7 +71,6 @@ export default class OpportunityProductViewer extends NavigationMixin(LightningE
             if(result == 'System Administrator') {
                 this.isAdmin = true;
             }
-            console.log(result);
         })
         .catch(error2 => {
             this.error = error2;
@@ -119,9 +118,13 @@ export default class OpportunityProductViewer extends NavigationMixin(LightningE
             this.error = labels.Opp_Prod_List_Error;
             this.emptyTable = undefined;
         }
-        this.handleRefresh();
         this.isLoading = false;
     };
+
+    //Gestion du clic sur le bouton rafraîchir pour mettre à jour la datatable
+    handleRefresh() {
+        refreshApex(this.wiredOppLineItemResult);
+    }
 
     //Gestion des clics sur les boutons 'Supprimer' et 'Voir Produit'
     handleRowAction(event) {
@@ -133,7 +136,6 @@ export default class OpportunityProductViewer extends NavigationMixin(LightningE
         } else if (actionName === 'Delete') {
             this.isLoading = true;
             this.handleDelete(oppProdId);
-            console.log(actionName);
         }
     };
 
@@ -153,7 +155,8 @@ export default class OpportunityProductViewer extends NavigationMixin(LightningE
     handleDelete(oppProdId) {
         deleteRecord(oppProdId)
             .then(result => {
-                return refreshApex(this.wiredOppLineItemResult);
+                refreshApex(this.wiredOppLineItemResult);
+                this.refreshRelatedList();
             })
             .catch(error => {
                 this.error = error;
@@ -161,8 +164,7 @@ export default class OpportunityProductViewer extends NavigationMixin(LightningE
     }
 
     //Rafraichit la related list Produit lorsque le tableau est modifié
-    handleRefresh() {
+    refreshRelatedList() {
         this.dispatchEvent(new RefreshEvent());
     }
-
 }

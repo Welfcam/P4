@@ -11,6 +11,7 @@ import See_Product from '@salesforce/label/c.See_Product';
 import Total_Price from '@salesforce/label/c.Total_Price';
 import Unit_Price from '@salesforce/label/c.Unit_Price';
 import Opp_Prod_List_Error from '@salesforce/label/c.Opp_Prod_List_Error';
+import Refresh from '@salesforce/label/c.Refresh';
 
 export default {
     No_Opp_Prod,
@@ -24,5 +25,6 @@ export default {
     See_Product,
     Total_Price,
     Unit_Price,
-    Opp_Prod_List_Error
+    Opp_Prod_List_Error,
+    Refresh
 };
